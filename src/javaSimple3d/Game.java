@@ -61,9 +61,9 @@ public class Game {
 				polygon = new Polygon();
 				polygon.getColor().setColor(face.getColor());
 				
-				if (face.getTextureIndex()>=0) {
+				if ((mesh.getTextures().size()>0)&&(face.getTextureIndex()>=0)) {
 	        polygon.setTexture(mesh.getTextures().elementAt(face.getTextureIndex()));
-	        for(k=0;k<face.getUVs().size();k++) {
+	        for(k=0;k<face.getUVs().size();k++) {	      
 	          polygon.getUVs().add(mesh.getUVs().elementAt(face.getUVs().elementAt(k)));
 	        }
 				}
@@ -148,16 +148,7 @@ public class Game {
 				}
 			}
 			/**/
-			
-			// wireframe
-			if (c>1) {
-				for(j=0;j<c;j++) {
-					v31.setVector(polygon.getVector(j));
-					v32.setVector(polygon.getVector((j+1)%c));
-					g.drawLine((int)(v31.x), (int)(v31.y), (int)(v32.x), (int)(v32.y), GameColor.ARGB(255, 255, 255, 255));
-				}
-			}					
-			
+						
 			if (c==3) {
         v31.setVector(polygon.getVector(0));
         v32.setVector(polygon.getVector(1));
@@ -172,13 +163,24 @@ public class Game {
         // texture
         if ((polygon.getTexture()!=null)&&(polygon.getUVs().size()==3)) {
           g.fillTriangleTextured(
-              (int)(v31.x), (int)(v31.y),polygon.getUVs().elementAt(0), 
-              (int)(v32.x), (int)(v32.y),polygon.getUVs().elementAt(1), 
-              (int)(v33.x), (int)(v33.y),polygon.getUVs().elementAt(2),
+              (int)(v31.x), (int)(v31.y),new Vector2(polygon.getUVs().elementAt(0)), 
+              (int)(v32.x), (int)(v32.y),new Vector2(polygon.getUVs().elementAt(1)), 
+              (int)(v33.x), (int)(v33.y),new Vector2(polygon.getUVs().elementAt(2)),
               polygon.getTexture()
             );
         }
 			}
+			
+	     // wireframe
+			/*
+      if (c>1) {
+        for(j=0;j<c;j++) {
+          v31.setVector(polygon.getVector(j));
+          v32.setVector(polygon.getVector((j+1)%c));
+          g.drawLine((int)(v31.x), (int)(v31.y), (int)(v32.x), (int)(v32.y), GameColor.ARGB(255, 128, 128, 128));
+        }
+      }         
+      /**/
 		}
 	}
 	

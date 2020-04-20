@@ -112,13 +112,23 @@ public class GameGraphics {
 	  double u,v;
 	  double du;
 	  double dv;
-	  du = (u2-u1)/(double)(x2-x1);
-	  dv = (v2-v1)/(double)(x2-x1);
+	  
+	  c = x2-x1;
+	  if (c!=0) {
+	    du = (u2-u1)/(double)c;
+	    dv = (v2-v1)/(double)c;	    
+	  } else {
+	    du = 0;
+	    dv = 0;
+	  }
+	  
 	  u = u1;
 	  v = v1;
 	  for(int i=x1;i<x2;i++) {
 	    x = (int)(u*texture.getWidth());
 	    y = texture.getHeight() - (int)(v*texture.getHeight());	    
+	    if (x>=texture.getWidth())x=texture.getWidth()-1;
+	    if (y>=texture.getHeight())y=texture.getHeight()-1;
 	    c = texture.getPixel(x, y);
 	    this.setPixel(i, y1, c);
 	    u+=du;
@@ -292,99 +302,124 @@ public class GameGraphics {
     int c = y3-y1;
     int xs[] = new int[c];
     int xe[] = new int[c];
-    double xsu[] = new double[c];
-    double xsv[] = new double[c];
-    double xeu[] = new double[c];
-    double xev[] = new double[c];
+    double us[] = new double[c];
+    double vs[] = new double[c];
+    double ue[] = new double[c];
+    double ve[] = new double[c];
     
     j = 0;
 
     // calculate slopes
-    sac = (x3-x1)/(double)(y3-y1);
+    if (c!=0) {
+      sac = (x3-x1)/(double)c;
+      suac = (t3.x-t1.x)/(double)c;
+      svac = (t3.y-t1.y)/(double)c;      
+    } else {
+      sac = 0;
+      suac = 0;
+      svac = 0;
+    }
+
     dxac = x1;
-    suac = (t3.x-t1.x)/(double)(y3-y1);
-    svac = (t3.y-t1.y)/(double)(y3-y1);
     duac = t1.x;
     dvac = t1.y;
     
     // slope ab
-    s = (x2-x1)/(double)(y2-y1);
+    c = y2-y1;
+    if (c!=0) {
+      s = (x2-x1)/(double)c;
+      su = (t2.x-t1.x)/(double)c;
+      sv = (t2.y-t1.y)/(double)c;      
+    } else {
+      s = 0;
+      su = 0;
+      sv = 0;
+    }
     dx = x1;
-    su = (t2.x-t1.x)/(double)(y2-y1);
-    sv = (t2.y-t1.y)/(double)(y2-y1);
     du = t1.x;
     dv = t1.y;
     for(i=y1;i<y2;i++) {
       xs[j]=(int)dxac;
       xe[j]=(int)dx;
-      xsu[j]=duac;
-      xsv[j]=dvac;
-      xeu[j]=du;
-      xev[j]=dv;
+      us[j]=duac;
+      vs[j]=dvac;
+      ue[j]=du;
+      ve[j]=dv;
             
       if (xs[j]>xe[j]) {
         k = xs[j];
         xs[j] = xe[j];
         xe[j] = k;
         
-        d = xsu[j];
-        xsu[j] = xeu[j];
-        xeu[j] = d;
-        d = xsv[j];
-        xsv[j] = xev[j];
-        xev[j] = d;
+        d = us[j];
+        us[j] = ue[j];
+        ue[j] = d;
+        d = vs[j];
+        vs[j] = ve[j];
+        ve[j] = d;
       }
       
       dxac+=sac;
       dx+=s;
+      
       duac+=suac;
       dvac+=svac;
       du+=su;
       dv+=sv;
+      
       j++;
     }
     
     // slope bc
-    s = (x3-x2)/(double)(y3-y2);
+    c = y3-y2;
+    if (c!=0) {
+      s = (x3-x2)/(double)c;
+      su = (t3.x-t2.x)/(double)c;
+      sv = (t3.y-t2.y)/(double)c;      
+    } else {
+      s = 0;
+      su = 0;
+      sv = 0;
+    }
     dx = x2;
-    su = (t3.x-t2.x)/(double)(y3-y2);
-    sv = (t3.y-t2.y)/(double)(y3-y2);
     du = t2.x;
     dv = t2.y;
     for(i=y2;i<y3;i++) {
       xs[j]=(int)dxac;
       xe[j]=(int)dx;
-      xsu[j]=duac;
-      xsv[j]=dvac;
-      xeu[j]=du;
-      xev[j]=dv;
+      us[j]=duac;
+      vs[j]=dvac;
+      ue[j]=du;
+      ve[j]=dv;
             
       if (xs[j]>xe[j]) {
         k = xs[j];
         xs[j] = xe[j];
         xe[j] = k;
         
-        d = xsu[j];
-        xsu[j] = xeu[j];
-        xeu[j] = d;
-        d = xsv[j];
-        xsv[j] = xev[j];
-        xev[j] = d;
+        d = us[j];
+        us[j] = ue[j];
+        ue[j] = d;
+        d = vs[j];
+        vs[j] = ve[j];
+        ve[j] = d;
       }
       
       dxac+=sac;
       dx+=s;
+      
       duac+=suac;
       dvac+=svac;
       du+=su;
       dv+=sv;
+      
       j++;
     }
     
     // draw
     j = y1;
     for(i=0;i<xs.length;i++) {
-      this.drawHLineTextured(xs[i], j, xsu[i], xsv[i], xe[i], xeu[i], xev[i], texture);
+      this.drawHLineTextured(xs[i], j, us[i], vs[i], xe[i], ue[i], ve[i], texture);
       j++;
     }
   }

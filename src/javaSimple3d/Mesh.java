@@ -176,7 +176,7 @@ public class Mesh {
 		
 		// front
 		mesh.getFaces().add(MeshFace.create3(0, 2, 1, 0, 2, 1, -1));
-		//mesh.getFaces().add(MeshFace.create3(0, 3, 2, 0, 3, 2, -1));
+		mesh.getFaces().add(MeshFace.create3(0, 3, 2, 0, 3, 2, -1));
 		
 		return mesh;
 	}
