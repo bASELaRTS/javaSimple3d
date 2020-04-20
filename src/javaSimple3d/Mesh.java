@@ -12,8 +12,9 @@ public class Mesh {
 	private Vector<Vector3> m_normals;
 	private Vector<Vector2> m_uvs;
 	private Vector<MeshFace> m_faces;
+	private Vector<Texture> m_textures;
 	
-	private boolean m_backfaceCulling;
+	private boolean m_backfaceCulling;	
 	
 	public Mesh() {
 		this.m_vertices = new Vector<Vector3>();
@@ -21,6 +22,7 @@ public class Mesh {
 		this.m_normals = new Vector<Vector3>();
 		this.m_uvs = new Vector<Vector2>();
 		this.m_faces = new Vector<MeshFace>();
+		this.m_textures = new Vector<Texture>();
 		
 		this.setBackfaceCulling(false);
 	}
@@ -121,20 +123,28 @@ public class Mesh {
 			e.printStackTrace();
 		}
 
-		Vector3 vmax = new Vector3(Double.MIN_VALUE,Double.MIN_VALUE,Double.MIN_VALUE);
+		// create copy in transformed vertices
+    for(i=0;i<this.getVertices().size();i++) {
+      v3 = this.getVertices().elementAt(i);
+      this.getVerticesTransformed().add(new Vector3(v3));
+    }
+    
+    /*
+    // debug: determine max/min size
+    Vector3 vmax = new Vector3(Double.MIN_VALUE,Double.MIN_VALUE,Double.MIN_VALUE);
 		Vector3 vmin = new Vector3(Double.MAX_VALUE,Double.MAX_VALUE,Double.MAX_VALUE);
 		for(i=0;i<this.getVertices().size();i++) {
 			v3 = this.getVertices().elementAt(i);
-			this.getVerticesTransformed().add(new Vector3(v3));
 			if (v3.x>vmax.x) vmax.x=v3.x;
 			if (v3.y>vmax.y) vmax.y=v3.y;
 			if (v3.z>vmax.z) vmax.z=v3.z;
 			if (v3.x<vmin.x) vmin.x=v3.x;
 			if (v3.y<vmin.y) vmin.y=v3.y;
-			if (v3.z<vmin.z) vmin.z=v3.z;
+			if (v3.z<vmin.z) vmin.z=v3.z;			
 		}
 		System.out.println(vmin.toString());
 		System.out.println(vmax.toString());
+		/**/
 	}
 	
 	public Vector<Vector3> getVertices(){return this.m_vertices;}
@@ -142,6 +152,7 @@ public class Mesh {
 	public Vector<Vector3> getNormals(){return this.m_normals;}
 	public Vector<Vector2> getUVs(){return this.m_uvs;}
 	public Vector<MeshFace> getFaces(){return this.m_faces;}
+	public Vector<Texture> getTextures(){return this.m_textures;}
 	public void setBackfaceCulling(boolean b) {this.m_backfaceCulling=b;}
 	public boolean getBackfaceCulling() {return this.m_backfaceCulling;}
 	
@@ -164,8 +175,8 @@ public class Mesh {
 		mesh.getUVs().add(new Vector2(0,0));
 		
 		// front
-		mesh.getFaces().add(MeshFace.create3(0, 2, 1, 0, 2, 1));
-		mesh.getFaces().add(MeshFace.create3(0, 3, 2, 0, 3, 2));
+		mesh.getFaces().add(MeshFace.create3(0, 2, 1, 0, 2, 1, -1));
+		//mesh.getFaces().add(MeshFace.create3(0, 3, 2, 0, 3, 2, -1));
 		
 		return mesh;
 	}
@@ -194,23 +205,23 @@ public class Mesh {
 		mesh.getUVs().add(new Vector2(0,0));
 		
 		// front
-		mesh.getFaces().add(MeshFace.create3(0, 2, 1, 0, 2, 1));
-		mesh.getFaces().add(MeshFace.create3(0, 3, 2, 0, 3, 2));
+		mesh.getFaces().add(MeshFace.create3(0, 2, 1, 0, 2, 1, -1));
+		mesh.getFaces().add(MeshFace.create3(0, 3, 2, 0, 3, 2, -1));
 		// side
-		mesh.getFaces().add(MeshFace.create3(1, 6, 5, 0, 2, 1));
-		mesh.getFaces().add(MeshFace.create3(1, 2, 6, 0, 3, 2));
+		mesh.getFaces().add(MeshFace.create3(1, 6, 5, 0, 2, 1, -1));
+		mesh.getFaces().add(MeshFace.create3(1, 2, 6, 0, 3, 2, -1));
 		// back
-		mesh.getFaces().add(MeshFace.create3(5, 7, 4, 0, 2, 1));
-		mesh.getFaces().add(MeshFace.create3(5, 6, 7, 0, 3, 2));
+		mesh.getFaces().add(MeshFace.create3(5, 7, 4, 0, 2, 1, -1));
+		mesh.getFaces().add(MeshFace.create3(5, 6, 7, 0, 3, 2, -1));
 		// side
-		mesh.getFaces().add(MeshFace.create3(4, 3, 0, 0, 2, 1));
-		mesh.getFaces().add(MeshFace.create3(4, 7, 3, 0, 3, 2));
+		mesh.getFaces().add(MeshFace.create3(4, 3, 0, 0, 2, 1, -1));
+		mesh.getFaces().add(MeshFace.create3(4, 7, 3, 0, 3, 2, -1));
 		// top
-		mesh.getFaces().add(MeshFace.create3(4, 1, 5, 0, 2, 1));
-		mesh.getFaces().add(MeshFace.create3(4, 0, 1, 0, 3, 2));
+		mesh.getFaces().add(MeshFace.create3(4, 1, 5, 0, 2, 1, -1));
+		mesh.getFaces().add(MeshFace.create3(4, 0, 1, 0, 3, 2, -1));
 		// bottom
-		mesh.getFaces().add(MeshFace.create3(3, 6, 2, 0, 2, 1));
-		mesh.getFaces().add(MeshFace.create3(3, 7, 6, 0, 3, 2));
+		mesh.getFaces().add(MeshFace.create3(3, 6, 2, 0, 2, 1, -1));
+		mesh.getFaces().add(MeshFace.create3(3, 7, 6, 0, 3, 2, -1));
 		
 		return mesh;
 	}

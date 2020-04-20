@@ -59,6 +59,15 @@ public class Game {
 				face = mesh.getFaces().elementAt(j);
 				
 				polygon = new Polygon();
+				polygon.getColor().setColor(face.getColor());
+				
+				if (face.getTextureIndex()>=0) {
+	        polygon.setTexture(mesh.getTextures().elementAt(face.getTextureIndex()));
+	        for(k=0;k<face.getUVs().size();k++) {
+	          polygon.getUVs().add(mesh.getUVs().elementAt(face.getUVs().elementAt(k)));
+	        }
+				}
+				
 				for(k=0;k<face.getVerticesIndex().size();k++) {
 					index = face.getVerticesIndex().elementAt(k);
 					v31.setVector(mesh.getVerticesTransformed().elementAt(index));
@@ -117,6 +126,7 @@ public class Game {
 		GameGraphics g = this.getGraphics();
 		Vector3 v31 = new Vector3();
 		Vector3 v32 = new Vector3();
+		Vector3 v33 = new Vector3();
 		Polygon polygon;
 		
 		x = 0;
@@ -146,6 +156,28 @@ public class Game {
 					v32.setVector(polygon.getVector((j+1)%c));
 					g.drawLine((int)(v31.x), (int)(v31.y), (int)(v32.x), (int)(v32.y), GameColor.ARGB(255, 255, 255, 255));
 				}
+			}					
+			
+			if (c==3) {
+        v31.setVector(polygon.getVector(0));
+        v32.setVector(polygon.getVector(1));
+        v33.setVector(polygon.getVector(2));
+        // polygon
+        g.fillTriangle(
+            (int)(v31.x), (int)(v31.y), 
+            (int)(v32.x), (int)(v32.y), 
+            (int)(v33.x), (int)(v33.y), 
+            polygon.getColor().getInt()
+        );
+        // texture
+        if ((polygon.getTexture()!=null)&&(polygon.getUVs().size()==3)) {
+          g.fillTriangleTextured(
+              (int)(v31.x), (int)(v31.y),polygon.getUVs().elementAt(0), 
+              (int)(v32.x), (int)(v32.y),polygon.getUVs().elementAt(1), 
+              (int)(v33.x), (int)(v33.y),polygon.getUVs().elementAt(2),
+              polygon.getTexture()
+            );
+        }
 			}
 		}
 	}

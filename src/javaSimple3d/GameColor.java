@@ -16,6 +16,10 @@ public class GameColor {
 		this.setARGB(c);
 	}
 	
+	public void setColor(GameColor c) {
+	  this.setARGB(c.a, c.r, c.g, c.b);
+	}
+	
 	public void setARGB(int a, int r, int g, int b) {
 		this.a = a;
 		this.r = r;
@@ -31,6 +35,8 @@ public class GameColor {
 		
 		this.setARGB(a, r, g, b);
 	}
+	
+	public int getInt() {return GameColor.ARGB(this.a, this.r, this.g, this.b);}
 	
 	public static int ARGB(int a, int r, int g, int b) {
 		int c = 0;

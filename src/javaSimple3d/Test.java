@@ -13,14 +13,25 @@ public class Test extends Game {
 		this.getCamera().getPosition().setCoordinates(0.0, 0.0, -5.0);
 		
 		Mesh mesh;
-		//mesh = Mesh.createPlaneX();this.getCamera().getPosition().setCoordinates(0, 0, -5);
+		
+		mesh = Mesh.createPlaneX();
+		mesh.getFaces().elementAt(0).getColor().setARGB(255, 255, 255, 0);
+		mesh.getTextures().add(new Texture("D:\\sources\\Eclipse\\javaSimple3d\\data\\RE2Claire\\EMD49.png"));
+		for(int i=0;i<mesh.getFaces().size();i++) {
+		  mesh.getFaces().elementAt(i).setTextureIndex(0);
+		}
+    this.getCamera().getPosition().setCoordinates(0, 0, -5);
+		
+		
 		//mesh = Mesh.createCube();this.getCamera().getPosition().setCoordinates(0, 0, 5);
-		//mesh = new Mesh();mesh.load("D:\\bASEL\\Projects\\Java\\javaMGSRipper\\data\\leon.obj");this.getCamera().getPosition().setCoordinates(0.0, 27, -50);
-		mesh = new Mesh();mesh.load("D:\\bASEL\\Projects\\Java\\javaMGSRipper\\data\\claire.obj");this.getCamera().getPosition().setCoordinates(0, 25, -50);
-		//mesh = new Mesh();mesh.load("D:\\bASEL\\Projects\\Java\\javaMGSRipper\\data\\em12b.obj");this.getCamera().getPosition().setCoordinates(0.0, 35, -100);
+		//mesh = new Mesh();mesh.load("data\\RE2Leon\\leon.obj");this.getCamera().getPosition().setCoordinates(0.0, 27, -50);
+		//mesh = new Mesh();mesh.load("data\\RE2Claire\\claire.obj");this.getCamera().getPosition().setCoordinates(0, 27, -50);
+		//mesh = new Mesh();mesh.load("data\\RE2Tyrant\\em12b.obj");this.getCamera().getPosition().setCoordinates(0.0, 35, -100);
 		//mesh = new Mesh();mesh.load("D:\\bASEL\\Projects\\Java\\javaMGSRipper\\25.obj");
-		//mesh = new Mesh();mesh.load("D:\\bASEL\\Projects\\Java\\javaMGSRipper\\data\\Ratchet\\Armor0.obj");this.getCamera().getPosition().setCoordinates(0.0, 5, -10);
-		mesh.setBackfaceCulling(true);
+		//mesh = new Mesh();mesh.load("data\\Ratchet\\Armor0.obj");this.getCamera().getPosition().setCoordinates(0.0, 5, -10);
+		//mesh = new Mesh();mesh.load("data\\LoUEllieDefault\\Ellie_MainOutfit.obj");this.getCamera().getPosition().setCoordinates(0.0, 0.008, -0.015);
+    //mesh = new Mesh();mesh.load("data\\SMGMario\\mario.obj");this.getCamera().getPosition().setCoordinates(0.0, 70, -140);
+		mesh.setBackfaceCulling(false);
 		this.getCamera().getTarget().y = this.getCamera().getPosition().y;
 		this.getMeshes().add(mesh);		
 	}	
@@ -59,7 +70,7 @@ public class Test extends Game {
 		double speed = 360 / 5000.0;
 		
 		//this.m_rotation.x += (this.getTimer().getElapsed()*speed)%360;
-		this.m_rotation.y += (this.getTimer().getElapsed()*speed)%360;
+		//this.m_rotation.y += (this.getTimer().getElapsed()*speed)%360;
 		//this.m_rotation.z += (this.getTimer().getElapsed()*speed)%360;
 
 		/*
@@ -78,7 +89,7 @@ public class Test extends Game {
 	public void paint() {
 		super.paint();
 		
-		Mesh mesh = this.getMeshes().elementAt(0);
+		Mesh mesh = this.getMeshes().elementAt(0);		
 		Graphics g = this.getGraphics().getImage().getGraphics();
 		g.setColor(Color.yellow);
 		g.drawString("FPS:" + Integer.toString(this.getTimer().getFPS()), 2, 12);

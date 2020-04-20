@@ -6,11 +6,17 @@ public class Polygon {
 	private Vector<Vector3> m_points;
 	private Vector3 m_normal;
 	private Vector3 m_center;
+	private GameColor m_color;
+	private Texture m_texture;
+	private Vector<Vector2> m_uvs;
 	
 	public Polygon() {
 		this.m_points = new Vector<Vector3>();
 		this.m_normal = new Vector3();
 		this.m_center = new Vector3();
+		this.m_color = new GameColor(255,255,255,255);
+		this.m_uvs = new Vector<Vector2>();
+		this.setTexture(null);		
 	}
 	
 	public void calculateNormal() {
@@ -48,4 +54,8 @@ public class Polygon {
 	public Vector3 getVector(int index) {return this.m_points.elementAt(index);}
 	public Vector3 getNormal() {return this.m_normal;}
 	public Vector3 getCenter() {return this.m_center;}
+	public GameColor getColor() {return this.m_color;}
+	public void setTexture(Texture t) {this.m_texture=t;}
+	public Texture getTexture() {return this.m_texture;}
+	public Vector<Vector2> getUVs(){return this.m_uvs;}
 }
