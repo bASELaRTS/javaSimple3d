@@ -50,10 +50,12 @@ public class Camera {
 		Vector3.cross(this.m_u, this.m_n, this.m_v);
 		this.getUp().normalize();
 		
-		this.m_matrixUVN[ 0]=this.m_u.x;this.m_matrixUVN[ 1]=this.m_u.y;this.m_matrixUVN[ 2]=this.m_u.z;this.m_matrixUVN[ 3]=0.0;
-		this.m_matrixUVN[ 4]=this.m_v.x;this.m_matrixUVN[ 5]=this.m_v.y;this.m_matrixUVN[ 6]=this.m_v.z;this.m_matrixUVN[ 7]=0.0;
-		this.m_matrixUVN[ 8]=this.m_n.x;this.m_matrixUVN[ 9]=this.m_n.y;this.m_matrixUVN[10]=this.m_n.z;this.m_matrixUVN[11]=0.0;
-		this.m_matrixUVN[12]=0.0;       this.m_matrixUVN[13]=0.0;       this.m_matrixUVN[14]=0.0;       this.m_matrixUVN[15]=1.0;
+		Matrix4.set(this.m_matrixUVN,
+		    this.m_u.x,this.m_u.y,this.m_u.z,0.0,
+        this.m_v.x,this.m_v.y,this.m_v.z,0.0,
+        this.m_n.x,this.m_n.y,this.m_n.z,0.0,
+        0,0,0,1
+		);
 		
 		Matrix4.identity(this.m_matrixTranslate);
 		this.m_matrixTranslate[ 3]=-this.getPosition().x;

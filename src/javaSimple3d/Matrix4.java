@@ -6,6 +6,13 @@ public class Matrix4 {
 		return m;
 	}
 	
+	public static void set(double[] matrix,double a, double b, double c, double d, double e, double f, double g, double h, double i, double j, double k, double l, double m, double n, double o, double p) {
+	  matrix[ 0]=a;matrix[ 1]=b;matrix[ 2]=c;matrix[ 3]=d;
+    matrix[ 4]=e;matrix[ 5]=f;matrix[ 6]=g;matrix[ 7]=h;
+    matrix[ 8]=i;matrix[ 9]=j;matrix[10]=k;matrix[11]=l;
+    matrix[12]=m;matrix[13]=n;matrix[14]=o;matrix[15]=p;
+	}
+	
 	public static void clear(double[] m) {
 		for(int i=0;i<m.length;i++) {
 			m[i]=0.0;

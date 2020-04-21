@@ -16,6 +16,7 @@ public class Test extends Game {
     this.getInput().getKeyboard().add(KeyEvent.VK_UP);
     this.getInput().getKeyboard().add(KeyEvent.VK_DOWN);
     this.getInput().getKeyboard().add(KeyEvent.VK_A);
+    this.getInput().getKeyboard().add(KeyEvent.VK_B);
     this.getInput().getKeyboard().add(KeyEvent.VK_Z);
 		
     this.getCamera().getPosition().setCoordinates(0.0, 0.0, -5.0);
@@ -74,7 +75,7 @@ public class Test extends Game {
     for(int i=0;i<mesh.getFaces().size();i++) {
       mesh.getFaces().elementAt(i).setTextureIndex(0);
     }
-    mesh.setBackfaceCulling(true);
+    mesh.setBackfaceCulling(false);
     mesh.setInvertedBackfaceCulling(true);
 		this.getCamera().getPosition().setCoordinates(0.0, 35, -100);
 		/**/
@@ -153,6 +154,12 @@ public class Test extends Game {
     } else if (keyboard.getState(KeyEvent.VK_DOWN)) {
       camera.getPosition().z--;      
     }		
+    
+    if (keyboard.getState(KeyEvent.VK_B)) {
+      keyboard.setState(KeyEvent.VK_B, false);
+      Mesh mesh = this.getMeshes().elementAt(0);
+      mesh.setBackfaceCulling(!mesh.getBackfaceCulling());
+    }
 	}
 	
 	public void paint() {
