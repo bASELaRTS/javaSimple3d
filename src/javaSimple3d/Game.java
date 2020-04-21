@@ -48,6 +48,8 @@ public class Game {
 			this.setupMesh(mesh);
 			this.transformLocal(mesh);
 			
+			
+			
 			// transform points
 			for(j=0;j<mesh.getVerticesTransformed().size();j++) {			
 				v31.setVector(mesh.getVerticesTransformed().elementAt(j));
@@ -65,6 +67,7 @@ public class Game {
 				polygon = new Polygon();
 				polygon.getColor().setColor(face.getColor());
 				
+				// copy texture coordinates to polygon
 				if ((mesh.getTextures().size()>0)&&(face.getTextureIndex()>=0)) {
 	        polygon.setTexture(mesh.getTextures().elementAt(face.getTextureIndex()));
 	        for(k=0;k<face.getUVs().size();k++) {	      
@@ -72,18 +75,19 @@ public class Game {
 	        }
 				}
 				
+				// copy transformed vertices to polygon
 				for(k=0;k<face.getVerticesIndex().size();k++) {
 					index = face.getVerticesIndex().elementAt(k);
 					v31.setVector(mesh.getVerticesTransformed().elementAt(index));
 					polygon.add(new Vector3(v31));
 				}
 				
-				polygon.calculateCenter();
+				//polygon.calculateCenter();
 				
 				if (mesh.getBackfaceCulling()) {
 					polygon.calculateNormal();
 					
-					Vector3.subtract(polygon.getVector(0),this.getCamera().getPosition(),v31);
+					//Vector3.subtract(polygon.getVector(0),this.getCamera().getPosition(),v31);					
 					v31.normalize();
 					d = Vector3.dot(v31, polygon.getNormal());
 					

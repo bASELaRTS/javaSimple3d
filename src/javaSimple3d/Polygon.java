@@ -24,11 +24,11 @@ public class Polygon {
 		Vector3 v2 = new Vector3();
 		Vector3 v3 = new Vector3();
 		
-		Vector3.subtract(this.m_points.elementAt(1),this.m_points.elementAt(0),v1);
-		Vector3.subtract(this.m_points.elementAt(2),this.m_points.elementAt(0),v2);
+		Vector3.subtract(this.m_points.elementAt(0),this.m_points.elementAt(1),v1);
+		Vector3.subtract(this.m_points.elementAt(0),this.m_points.elementAt(2),v2);
 		v1.normalize();
 		v2.normalize();
-		Vector3.cross(v2, v1, v3);
+		Vector3.cross(v1, v2, v3);
 		v3.normalize();
 		
 		this.getNormal().setVector(v3);
