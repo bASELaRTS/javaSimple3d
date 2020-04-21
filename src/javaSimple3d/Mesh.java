@@ -14,6 +14,7 @@ public class Mesh {
 	private Vector<MeshFace> m_faces;
 	private Vector<Texture> m_textures;
 	
+	private boolean m_invertBackfaceCulling;
 	private boolean m_backfaceCulling;	
 	
 	public Mesh() {
@@ -25,6 +26,7 @@ public class Mesh {
 		this.m_textures = new Vector<Texture>();
 		
 		this.setBackfaceCulling(false);
+		this.setInvertedBackfaceCulling(false);
 	}
 			
 	public void load(String filename) {
@@ -113,7 +115,33 @@ public class Mesh {
 								face.getUVs().add(j-1);
 							}							
 						}
-						this.getFaces().add(face);
+						
+						if (face.getVerticesIndex().size()>3) {
+						  MeshFace face2;
+
+              face2 = new MeshFace();
+              this.getFaces().add(face2);
+              face2.getVerticesIndex().add(face.getVerticesIndex().elementAt(0));
+              face2.getVerticesIndex().add(face.getVerticesIndex().elementAt(1));
+              face2.getVerticesIndex().add(face.getVerticesIndex().elementAt(2));
+              face2.getUVs().add(face.getUVs().elementAt(0));
+              face2.getUVs().add(face.getUVs().elementAt(1));
+              face2.getUVs().add(face.getUVs().elementAt(2));
+              face2.setTextureIndex(face.getTextureIndex());
+						  for(i=3;i<face.getVerticesIndex().size();i++) {
+                face2 = new MeshFace();
+                this.getFaces().add(face2);
+                face2.getVerticesIndex().add(face.getVerticesIndex().elementAt(0));
+                face2.getVerticesIndex().add(face.getVerticesIndex().elementAt(i-1));						    
+                face2.getVerticesIndex().add(face.getVerticesIndex().elementAt(i));               
+                face2.getUVs().add(face.getUVs().elementAt(0));
+                face2.getUVs().add(face.getUVs().elementAt(i-1));
+                face2.getUVs().add(face.getUVs().elementAt(i));
+                face2.setTextureIndex(face.getTextureIndex());
+						  }
+						} else {
+	            this.getFaces().add(face);
+						}						
 					}
 				}
 				
@@ -155,6 +183,8 @@ public class Mesh {
 	public Vector<Texture> getTextures(){return this.m_textures;}
 	public void setBackfaceCulling(boolean b) {this.m_backfaceCulling=b;}
 	public boolean getBackfaceCulling() {return this.m_backfaceCulling;}
+	public void setInvertedBackfaceCulling(boolean i) {this.m_invertBackfaceCulling=i;}
+	public boolean getInvertedBackfaceCulling(){return this.m_invertBackfaceCulling;}
 	
 	public static Mesh createPlaneX() {
 		Mesh mesh;

@@ -2,6 +2,7 @@ package javaSimple3d;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.Vector;
 
 public class GameGraphics {
 	private int m_width;
@@ -9,12 +10,14 @@ public class GameGraphics {
 	
 	private BufferedImage m_image;
 	private int[] m_data;
+	private double[] m_zbuffer;
 	
 	public GameGraphics(int w, int h) {
 		this.setSize(w, h);
 		
 		this.m_image = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
 		this.m_data = ((DataBufferInt)this.m_image.getRaster().getDataBuffer()).getData();
+		this.m_zbuffer = new double[w*h];
 	}
 
 	public void setPixel(int x, int y, int c) {
@@ -136,6 +139,46 @@ public class GameGraphics {
 	  }	  
 	}
 	
+	public void drawHLineTextured(Vertex v1, Vertex v2, Texture texture) {
+	  double d;
+	  Vector2 duv = new Vector2();
+	  Vector2 uv = new Vector2();
+	  Vector2 vector2 = new Vector2();
+	  int x,y,c;
+	  int x1,x2,y1;
+	  double dz,z;
+
+	  d = v2.getPoint().x - v1.getPoint().x;
+	  if (d!=0.0) {
+	    dz = (v2.getPoint().z - v1.getPoint().z)/d;
+	    duv.setCoordinates((v2.getUV().x-v1.getUV().x)/d, (v2.getUV().y-v1.getUV().y)/d);
+	  } else {
+	    dz = 0;
+	    duv.setCoordinates(0, 0);
+	  }
+	  
+    x1 = (int)v1.getPoint().x;
+    x2 = (int)v2.getPoint().x;
+    y1 = (int)v1.getPoint().y;
+	  uv.setVector(v1.getUV());
+	  z = v1.getPoint().z;
+	  for(int i=x1;i<x2;i++) {
+	    d = this.m_zbuffer[y1*this.getWidth()+i];
+	    if (z<d) {
+	      this.m_zbuffer[y1*this.getWidth()+i]=z;
+	      x = (int)(uv.x*texture.getWidth());
+	      y = texture.getHeight() - (int)(uv.y*texture.getHeight());     
+	      if (x>=texture.getWidth())x=texture.getWidth()-1;
+	      if (y>=texture.getHeight())y=texture.getHeight()-1;
+	      c = texture.getPixel(x, y);
+	      this.setPixel(i, y1, c);
+	    }
+	    Vector2.add(uv, duv, vector2);
+	    uv.setVector(vector2);
+	    z += dz;
+	  }
+	}
+		
 	public void fillRect(int x, int y, int w, int h, int c) {
     int i;
 	  int x2 = (x+w);
@@ -424,6 +467,114 @@ public class GameGraphics {
     }
   }
   
+  public void fillTriangleTextured(Vertex v1, Vertex v2, Vertex v3, Texture texture) {
+    if (v1.getPoint().y>v3.getPoint().y) Vertex.swap(v1, v3);
+    if (v2.getPoint().y>v3.getPoint().y) Vertex.swap(v2, v3);
+    if (v1.getPoint().y>v2.getPoint().y) Vertex.swap(v1, v2);
+    
+    Vector<Vertex> edgeStart = new Vector<Vertex>();
+    Vector<Vertex> edgeEnd = new Vector<Vertex>(); 
+    Vertex vertexSlopeAC = new Vertex();
+    Vertex vertexSlope = new Vertex();
+    Vertex vertexInterpolationAC = new Vertex();
+    Vertex vertexInterpolation = new Vertex();
+    Vertex vertex = new Vertex();
+    double dcount; 
+    int i;
+    int y1, y2, y3;
+    
+    y1 = (int)v1.getPoint().y;
+    y2 = (int)v2.getPoint().y;
+    y3 = (int)v3.getPoint().y;
+    
+    dcount = y3-y1;
+    if (dcount!=0.0) {
+      vertexInterpolationAC.getPoint().setCoordinates(
+            (v3.getPoint().x - v1.getPoint().x)/dcount
+          , 0
+          , (v3.getPoint().z - v1.getPoint().z)/dcount
+      );
+      vertexInterpolationAC.getUV().setCoordinates((v3.getUV().x - v1.getUV().x)/dcount, (v3.getUV().y - v1.getUV().y)/dcount);      
+    } else {
+      vertexInterpolationAC.getPoint().setCoordinates(0, 0, 0);
+      vertexInterpolationAC.getUV().setCoordinates(0,0);      
+    }
+    vertexSlopeAC.setVertex(v1);
+    
+    dcount = y2-y1;
+    if (dcount!=0.0) {
+      vertexInterpolation.getPoint().setCoordinates(
+            (v2.getPoint().x - v1.getPoint().x)/dcount
+          , 0
+          , (v2.getPoint().z - v1.getPoint().z)/dcount
+      );
+      vertexInterpolation.getUV().setCoordinates((v2.getUV().x - v1.getUV().x)/dcount, (v2.getUV().y - v1.getUV().y)/dcount);
+    } else {
+      vertexInterpolation.getPoint().setCoordinates(0, 0, 0);
+      vertexInterpolation.getUV().setCoordinates(0,0);
+    }
+    vertexSlope.setVertex(v1);    
+    for(i=y1;i<y2;i++) {
+      if ((i>=0)&&(i<this.getHeight())) {
+        Vertex vertexStart = new Vertex(vertexSlopeAC);
+        Vertex vertexEnd = new Vertex(vertexSlope);
+        vertexStart.getPoint().y=i;
+        vertexEnd.getPoint().y=i;
+        if (vertexStart.getPoint().x>vertexEnd.getPoint().x) Vertex.swap(vertexStart, vertexEnd);
+        edgeStart.add(vertexStart);
+        edgeEnd.add(vertexEnd);        
+        Vertex.add(vertexSlopeAC, vertexInterpolationAC, vertex);
+        vertexSlopeAC.setVertex(vertex);
+        Vertex.add(vertexSlope, vertexInterpolation, vertex);
+        vertexSlope.setVertex(vertex);
+      }
+    }
+
+    dcount = y3-y2;
+    if (dcount!=0.0) {
+      vertexInterpolation.getPoint().setCoordinates(
+            (v3.getPoint().x - v2.getPoint().x)/dcount
+          , 0
+          , (v3.getPoint().z - v2.getPoint().z)/dcount
+      );
+      vertexInterpolation.getUV().setCoordinates((v3.getUV().x - v2.getUV().x)/dcount, (v3.getUV().y - v2.getUV().y)/dcount);
+    } else {
+      vertexInterpolation.getPoint().setCoordinates(0, 0, 0);
+      vertexInterpolation.getUV().setCoordinates(0,0);
+    }
+    vertexSlope.setVertex(v2);    
+    for(i=y2;i<y3;i++) {
+      if ((i>=0)&&(i<this.getHeight())) {
+        Vertex vertexStart = new Vertex(vertexSlopeAC);
+        Vertex vertexEnd = new Vertex(vertexSlope);
+        vertexStart.getPoint().y=i;
+        vertexEnd.getPoint().y=i;
+        if (vertexStart.getPoint().x>vertexEnd.getPoint().x) Vertex.swap(vertexStart, vertexEnd);
+        edgeStart.add(vertexStart);
+        edgeEnd.add(vertexEnd);        
+        Vertex.add(vertexSlopeAC, vertexInterpolationAC, vertex);
+        vertexSlopeAC.setVertex(vertex);
+        Vertex.add(vertexSlope, vertexInterpolation, vertex);
+        vertexSlope.setVertex(vertex);
+      }
+    }
+    
+    for(i=0;i<edgeStart.size();i++) {
+      Vertex vertexStart = edgeStart.elementAt(i);
+      Vertex vertexEnd = edgeEnd.elementAt(i);
+
+      if (texture==null) {
+        int x1 = (int)vertexStart.getPoint().x;
+        int x2 = (int)vertexEnd.getPoint().x;
+        int y = (int)vertexStart.getPoint().y;
+        int c = (int)vertexStart.getColor();
+        this.drawHLine(x1, y, x2, c);
+      } else {
+        this.drawHLineTextured(vertexStart, vertexEnd, texture);
+      }
+    }
+  }
+  
   public void drawTexture(Texture texture, int x, int y) {
     for(int j=0;j<texture.getHeight();j++) {
       for(int i=0;i<texture.getWidth();i++) {
@@ -432,6 +583,12 @@ public class GameGraphics {
     }
   }
 
+  public void resetZbuffer() {
+    int i;
+    for(i=0;i<this.m_zbuffer.length;i++) {
+      this.m_zbuffer[i] = Double.MAX_VALUE;
+    }
+  }
   public void paint() {}
 	public BufferedImage getImage() {return this.m_image;}
 	

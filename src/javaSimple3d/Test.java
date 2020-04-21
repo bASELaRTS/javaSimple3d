@@ -2,17 +2,24 @@ package javaSimple3d;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 
 public class Test extends Game {
 	private Vector3 m_rotation;
-	private Texture m_texture;
 	
 	public Test() {
 		super();
 		
+		// initialize keyboard
+		this.getInput().getKeyboard().add(KeyEvent.VK_LEFT);
+    this.getInput().getKeyboard().add(KeyEvent.VK_RIGHT);
+    this.getInput().getKeyboard().add(KeyEvent.VK_UP);
+    this.getInput().getKeyboard().add(KeyEvent.VK_DOWN);
+    this.getInput().getKeyboard().add(KeyEvent.VK_A);
+    this.getInput().getKeyboard().add(KeyEvent.VK_Z);
+		
+    this.getCamera().getPosition().setCoordinates(0.0, 0.0, -5.0);
 		this.m_rotation = new Vector3();
-		this.getCamera().getPosition().setCoordinates(0.0, 0.0, -5.0);
-		this.m_texture = new Texture("data\\RE2Claire\\EMD49.png");
 		
 		Mesh mesh;		
 		
@@ -44,10 +51,11 @@ public class Test extends Game {
       mesh.getFaces().elementAt(i).setTextureIndex(0);
     }
     mesh.setBackfaceCulling(true);
+    mesh.setInvertedBackfaceCulling(true);
 		this.getCamera().getPosition().setCoordinates(0.0, 27, -50);
 		/**/
 		
-		//*
+		/*
 		mesh = new Mesh();
 		mesh.load("data\\RE2Claire\\claire.obj");
     mesh.getTextures().add(new Texture("data\\RE2Claire\\EMD49.png"));
@@ -55,10 +63,11 @@ public class Test extends Game {
       mesh.getFaces().elementAt(i).setTextureIndex(0);
     }
     mesh.setBackfaceCulling(true);
+    mesh.setInvertedBackfaceCulling(true);
 		this.getCamera().getPosition().setCoordinates(0, 27, -50);
 		/**/
 		
-		/*
+		//*
 		mesh = new Mesh();
 		mesh.load("data\\RE2Tyrant\\em12b.obj");
     mesh.getTextures().add(new Texture("data\\RE2Tyrant\\EM12B.png"));
@@ -66,6 +75,7 @@ public class Test extends Game {
       mesh.getFaces().elementAt(i).setTextureIndex(0);
     }
     mesh.setBackfaceCulling(true);
+    mesh.setInvertedBackfaceCulling(true);
 		this.getCamera().getPosition().setCoordinates(0.0, 35, -100);
 		/**/
 		
@@ -119,24 +129,30 @@ public class Test extends Game {
 	}
 	
 	public void update() {
-		double speed = 360 / 5000.0;
-		
+    super.update();
+
+    double speed = 360 / 5000.0;		
 		//this.m_rotation.x += (this.getTimer().getElapsed()*speed)%360;
 		this.m_rotation.y += (this.getTimer().getElapsed()*speed)%360;
 		//this.m_rotation.z += (this.getTimer().getElapsed()*speed)%360;
-		//this.m_rotation.z += 15;
-		
-		/*
-		Vector4 v41 = new Vector4();
-		Vector4 v42 = new Vector4();
-		double[] my = Matrix4.create();
-		Matrix4.rotationY(Helper.deg2rad(this.m_rotation.y), my);		
-		v41.setCoordinates(this.getCamera().getPosition().x, this.getCamera().getPosition().y, this.getCamera().getPosition().z, 1.0);
-		Matrix4.multiply(my, v41, v42);
-		this.getCamera().getPosition().setCoordinates(v42.x, v42.y, v42.z);
-		/**/		
-		
-		super.update();
+
+		Camera camera = this.getCamera();
+		Keyboard keyboard = this.getInput().getKeyboard();
+		if (keyboard.getState(KeyEvent.VK_LEFT)) {
+		  camera.getPosition().x--;
+		} else if (keyboard.getState(KeyEvent.VK_RIGHT)) {
+      camera.getPosition().x++;		  
+		}
+    if (keyboard.getState(KeyEvent.VK_A)) {
+      camera.getPosition().y++;      
+    } else if (keyboard.getState(KeyEvent.VK_Z)) {
+      camera.getPosition().y--;      
+    }
+    if (keyboard.getState(KeyEvent.VK_UP)) {
+      camera.getPosition().z++;      
+    } else if (keyboard.getState(KeyEvent.VK_DOWN)) {
+      camera.getPosition().z--;      
+    }		
 	}
 	
 	public void paint() {

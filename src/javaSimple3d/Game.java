@@ -11,6 +11,7 @@ public class Game {
 	private Renderlist m_renderlist;
 	private Camera m_camera;
 	private Vector<Mesh> m_meshes;
+	private Input m_input;
 
 	public Game() {		
 		int w = 640;
@@ -21,6 +22,7 @@ public class Game {
 		this.m_renderlist = new Renderlist();
 		this.m_camera = new Camera(w,h);
 		this.m_meshes = new Vector<Mesh>();
+		this.m_input = new Input();
 
 		this.setSize(w,h);		
 	}
@@ -34,7 +36,9 @@ public class Game {
 		Polygon polygon;
 		Vector3 v31 = new Vector3();
 		Vector3 v32 = new Vector3();
-		
+		boolean b;
+
+		this.getGraphics().resetZbuffer();
 		this.m_renderlist.clear();
 		this.getCamera().update();
 		
@@ -82,7 +86,14 @@ public class Game {
 					Vector3.subtract(polygon.getVector(0),this.getCamera().getPosition(),v31);
 					v31.normalize();
 					d = Vector3.dot(v31, polygon.getNormal());
-					if (d<0.0) {
+					
+					if (mesh.getInvertedBackfaceCulling()) {
+					  b = d<0.0;
+					} else {
+					  b = d>0.0;
+					}
+					  
+					if (b) {
 						this.getRenderlist().add(polygon);
 					}	
 				} else {
@@ -95,6 +106,11 @@ public class Game {
 				this.getRenderlist().add(p);
 				/**/
 			}
+			
+			// perform sorting
+			
+			
+			// perform lighting
 
 			// renderlist to perspective -> screen
 			for(j=0;j<this.getRenderlist().count();j++) {
@@ -154,13 +170,29 @@ public class Game {
         v32.setVector(polygon.getVector(1));
         v33.setVector(polygon.getVector(2));
         // polygon
+        /*
         g.fillTriangle(
             (int)(v31.x), (int)(v31.y), 
             (int)(v32.x), (int)(v32.y), 
             (int)(v33.x), (int)(v33.y), 
             polygon.getColor().getInt()
         );
+        /**/
+        
+        //*
+        Vertex vertex1 = new Vertex();
+        Vertex vertex2 = new Vertex();
+        Vertex vertex3 = new Vertex();
+        vertex1.getPoint().setVector(v31);
+        vertex1.getUV().setVector(polygon.getUVs().elementAt(0));
+        vertex2.getPoint().setVector(v32);
+        vertex2.getUV().setVector(polygon.getUVs().elementAt(1));
+        vertex3.getPoint().setVector(v33);
+        vertex3.getUV().setVector(polygon.getUVs().elementAt(2));
+        g.fillTriangleTextured(vertex1, vertex2, vertex3, polygon.getTexture());
+        /**/
         // texture
+        /*
         if ((polygon.getTexture()!=null)&&(polygon.getUVs().size()==3)) {
           g.fillTriangleTextured(
               (int)(v31.x), (int)(v31.y),new Vector2(polygon.getUVs().elementAt(0)), 
@@ -169,6 +201,7 @@ public class Game {
               polygon.getTexture()
             );
         }
+        /**/
 			}
 			
 	     // wireframe
@@ -205,4 +238,5 @@ public class Game {
 	public Camera getCamera() {return this.m_camera;}
 	public Renderlist getRenderlist() {return this.m_renderlist;}
 	public Vector<Mesh> getMeshes(){return this.m_meshes;}
+	public Input getInput() {return this.m_input;}
 }

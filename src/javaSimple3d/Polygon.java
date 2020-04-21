@@ -18,7 +18,7 @@ public class Polygon {
 		this.m_uvs = new Vector<Vector2>();
 		this.setTexture(null);		
 	}
-	
+		
 	public void calculateNormal() {
 		Vector3 v1 = new Vector3();
 		Vector3 v2 = new Vector3();
