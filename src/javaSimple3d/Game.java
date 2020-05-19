@@ -12,19 +12,25 @@ public class Game {
 	private Camera m_camera;
 	private Vector<Mesh> m_meshes;
 	private Input m_input;
+	private String m_key;
 
 	public Game() {		
 		int w = 640;
 		int h = 480;
 		
+    this.setKey("GameEngine");
+    this.setSize(w,h);    
+		
 		this.m_graphics = new GameGraphics(w,h);
 		this.m_timer = new Timer();
 		this.m_renderlist = new Renderlist();
+
 		this.m_camera = new Camera(w,h);
+    this.getCamera().setScreenSize(w, h);
+    this.getCamera().setFieldOfView(this.getCamera().getFieldOfView());
+
 		this.m_meshes = new Vector<Mesh>();
 		this.m_input = new Input();
-
-		this.setSize(w,h);		
 	}
 
 	public void update() {
@@ -47,9 +53,7 @@ public class Game {
 			
 			this.setupMesh(mesh);
 			this.transformLocal(mesh);
-			
-			
-			
+								
 			// transform points
 			for(j=0;j<mesh.getVerticesTransformed().size();j++) {			
 				v31.setVector(mesh.getVerticesTransformed().elementAt(j));
@@ -230,13 +234,13 @@ public class Game {
 	public void setSize(int w, int h) {
 		this.setWidth(w);
 		this.setHeight(h);
-		this.getCamera().setScreenSize(w, h);
-		this.getCamera().setFieldOfView(this.getCamera().getFieldOfView());
 	}
 	public void setWidth(int i) {this.m_width=i;}
 	public int getWidth() {return this.m_width;}
 	public void setHeight(int i) {this.m_height=i;}
-	public int getHeight() {return this.m_height;}	
+	public int getHeight() {return this.m_height;}
+	public void setKey(String s) {this.m_key=s;}
+	public String getKey() {return this.m_key;}
 	public GameGraphics getGraphics() {return this.m_graphics;}
 	public Timer getTimer() {return this.m_timer;}
 	public Camera getCamera() {return this.m_camera;}

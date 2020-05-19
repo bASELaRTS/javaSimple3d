@@ -21,7 +21,7 @@ public class GameFrame extends JFrame implements WindowListener, KeyListener {
 		this.addWindowListener(this);
 		this.addKeyListener(this);
 		
-		this.setTitle("GameFrame");
+		this.setTitle(game.getKey());
 		this.setLayout(new BorderLayout());
 		this.add(this.m_panel,BorderLayout.CENTER);
 		this.pack();

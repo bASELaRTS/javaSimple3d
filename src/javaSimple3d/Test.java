@@ -10,6 +10,8 @@ public class Test extends Game {
 	public Test() {
 		super();
 		
+		this.setKey("Test");
+		
 		// initialize keyboard
 		this.getInput().getKeyboard().add(KeyEvent.VK_LEFT);
     this.getInput().getKeyboard().add(KeyEvent.VK_RIGHT);
